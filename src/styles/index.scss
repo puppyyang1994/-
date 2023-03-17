@@ -3,6 +3,8 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+// 引入公共样式
+@import './common.scss';
 
 body {
   height: 100%;
