@@ -121,3 +121,9 @@ module.exports = {
       )
   }
 }
+// 阻止eslint报错
+module.exports = {
+  chainWebpack: config => {
+    config.module.rules.delete('eslint')
+  }
+}
