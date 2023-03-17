@@ -31,8 +31,14 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    }
+    },
     // before: require('./mock/mock-server.js')
+
+    // 代理跨域的配置
+    '/api': {
+      target: 'http://ihrm.itheima.net/',
+      changeOrigin: true
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
