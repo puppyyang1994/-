@@ -3,6 +3,7 @@
  */
 
 /**
+ * 判断 传入path是否为外部链接的地址
  * @param {string} path
  * @returns {Boolean}
  */

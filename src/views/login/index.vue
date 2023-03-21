@@ -12,7 +12,7 @@
       <!-- 插入标题图片 -->
       <div class="title-container">
         <h3 class="title">
-          <img src="@/assets/common/login-logo.png" alt="" />
+          <img src="@/assets/common/login-logo.png" alt="">
         </h3>
       </div>
       <!-- 用户名 手机号 -->
@@ -59,22 +59,25 @@
         type="primary"
         style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="handleLogin"
-        >登录</el-button
-      >
+      >登录</el-button>
 
       <div class="tips">
         <span style="margin-right: 20px">账号: 13800000002</span>
         <span> 密码: 123456</span>
       </div>
     </el-form>
+    <el-button @click="fnTest">测试</el-button>
   </div>
 </template>
 
 <script>
 import { validMobile } from '@/utils/validate'
+import { getUserProfileAPI } from '@/api'
+// import { mapActions } from 'vuex'
 
 export default {
-  data() {
+  name: 'Login',
+  data () {
     // 自定义校验函数  手机号
     const validateMobile = function (rule, value, callback) {
       validMobile(value) ? callback() : callback(new Error('手机号格式不对'))
@@ -113,7 +116,8 @@ export default {
     }
   },
   methods: {
-    showPwd() {
+    // ...mapActions('user', ['loginActions']),
+    showPwd () {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
@@ -123,24 +127,50 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+    handleLogin () {
+      this.$refs.loginForm.validate(async (valid) => {
+        // 登录校验
         if (valid) {
           this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          // await只能提取Promise对象成功的状态的值
+          // await是来取代then()函数的， await可以把成功的值提取出来留在原地
+          // 如何捕获Promise错误的状态呢？ 使用try+catch
+          /*  try {
+            // 放入可能会报错的代码
+            const res = await loginAPI(this.loginForm)
+            this.$message.success(res.message)
+            this.$store.commit('user/SET_TOKEN', res.data)
+            // console.log(res.data)
+            this.loading = false
+          } catch (err) {
+            // 一旦try大括号内代码报错立刻停止try大括号代码向下执行
+            // 转而直接跳入catch大括号里执行，err形参接收的是错误信息对象
+            // 用console.dir打印
+            this.$message.error(err.message)
+            console.dir(err)
+          } */
+          try {
+            /* const res = this.$store.dispatch('user/loginActions', this.loginForm)
+            console.log(res) 会返回一个Promise对象 */
+            // 这里必须加await, 不加await,会调用登录接口的时候，这个登录异步任务无结果的时候，代码会往下走就跳转进去了（就算密码错了也能跳转）
+            const res = await this.$store.dispatch('user/loginActions', this.loginForm)
+            // 登录后跳转主页
+            // axios方法无论何时都会返回Promise对象（自定义的，非axios）
+            // await等待后面成功了 才会继续往下走
+            this.$message(res.message)
+            this.$router.replace('/')
+            // console.log('跳转了')   //会先跳转 在登录 解决办法就是异步处理
+          } catch (error) {
+            console.dir(error)
+          }
         } else {
-          console.log('error submit!!')
-          return false
+          return false // 测试未通过
         }
       })
+    },
+    async fnTest () {
+      const res = await getUserProfileAPI()
+      console.log(res)
     }
   }
 }

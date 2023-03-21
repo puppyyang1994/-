@@ -6,24 +6,23 @@ function resolve (dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || 'vue Admin Template'
+// process.env是node环境内置的全局变量(可以直接使用)
+// 环境变量 可以根据敲击的命令不同，他的值也会不同
+// 一套代码 可以适配两个环境（开发环境和生产环境）
 
-// 开发环境端口
-const port = process.env.port || process.env.npm_config_port || 9528 // dev port
-
-// All configuration item explanations can be find in https://cli.vuejs.org/config/
+// 3. 使用:
+// 被webpack打包前端代码中，我们只能使用VUE_APP_开头的环境变量（和一个内置的NODE——ENV）
+// 环境配置文件：可以使用process.env所有值
+// 在前端src代码中，process.env的值必须以VUE_APP_开头（添加到环境变量文件中）
+const port = process.env.port || process.env.npm_config_port || 9528
+// console.log(process.env)
 module.exports = {
-  /**
-   * You will need to set publicPath if you plan to deploy your site under a sub path,
-   * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
-   * then publicPath should be set to "/bar/".
-   * In most cases please use '/' !!!
-   * Detail: https://cli.vuejs.org/config/#publicpath
-   */
-  publicPath: '/',
+  publicPath: process.env.NODE_ENV === 'development' ? '/' : './',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  // lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: false,
   productionSourceMap: false,
   devServer: {
     port: port,
@@ -32,17 +31,16 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    // before: require('./mock/mock-server.js')
-
-    // 代理跨域的配置
-    '/api': {
-      target: 'http://ihrm.itheima.net/',
-      changeOrigin: true
+    proxy: {
+      // 这里的 api 表示如果我们的请求地址以 /api 开头的时候，就出触发代理机制
+      '/api': {
+        target: 'http://ihrm.itheima.net', // 需要代理的地址
+        changeOrigin: true // 是否跨域，需要设置此值为 true 才可以让本地服务代理我们发出请求
+      }
     }
+
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
     name: name,
     resolve: {
       alias: {
@@ -51,21 +49,16 @@ module.exports = {
     }
   },
   chainWebpack (config) {
-    // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {
         rel: 'preload',
-        // to ignore runtime.js
-        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
         fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
         include: 'initial'
       }
     ])
 
-    // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
 
-    // set svg-sprite-loader
     config.module
       .rule('svg')
       .exclude.add(resolve('src/icons'))
@@ -89,7 +82,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
@@ -117,15 +110,10 @@ module.exports = {
                 }
               }
             })
-          // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
+            // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
           config.optimization.runtimeChunk('single')
         }
       )
   }
 }
-// 阻止eslint报错
-module.exports = {
-  chainWebpack: config => {
-    config.module.rules.delete('eslint')
-  }
-}
+
