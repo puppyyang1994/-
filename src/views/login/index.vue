@@ -11,9 +11,9 @@
     >
       <!-- 插入标题图片 -->
       <div class="title-container">
-        <h3 class="title">
-          <img src="@/assets/common/login-logo.png" alt="">
-        </h3>
+        <h1 class="title">
+          天鹏管理登录系统
+        </h1>
       </div>
       <!-- 用户名 手机号 -->
       <el-form-item prop="mobile">
@@ -282,7 +282,7 @@ $light_gray: #eee;
     position: relative;
 
     .title {
-      font-size: 26px;
+      font-size: 40px;
       color: $light_gray;
       margin: 0px auto 40px auto;
       text-align: center;

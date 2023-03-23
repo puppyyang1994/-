@@ -10,7 +10,8 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    // 修改sidebar的背景颜色
+    background:-webkit-linear-gradient(bottom,#818A96, #B2B9C4);
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -27,6 +28,8 @@
 
     .scrollbar-wrapper {
       overflow-x: hidden !important;
+      // 修改sidebar背景图片
+      background: url('~@/assets/common/leftnavBg.png') no-repeat 0 100%;
     }
 
     .el-scrollbar__bar.is-vertical {
@@ -66,6 +69,32 @@
       border: none;
       height: 100%;
       width: 100% !important;
+      a {
+        li {
+          .svg-icon {
+            color: #25282C;
+            font-size: 18px;
+            vertical-align: middle;
+            .icon {
+              color: #fff;
+            }
+          }
+    
+          span {
+            color:#25282C;
+          }
+    
+          &:hover {
+            .svg-icon {
+              color: #18CAA7;
+            }
+            
+            span {
+              color: #18CAA7;
+            }
+          }
+        }
+      }
     }
 
     // menu hover
