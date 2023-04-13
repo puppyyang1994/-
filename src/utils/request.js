@@ -65,7 +65,8 @@ service.interceptors.response.use(
       // 清除用户信息
       store.dispatch('user/logoutActions')
       // 返回登录页
-      router.replace('/login')
+
+      router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
     }
     return Promise.reject(error)
   })

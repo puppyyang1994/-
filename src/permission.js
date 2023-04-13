@@ -6,6 +6,8 @@ import NProgress from 'nprogress'
 // 导入进度条样式
 import 'nprogress/nprogress.css'
 
+// 引入工具方法getPageTitle
+import getPageTitle from './utils/get-page-title'
 // const whiteList = ['/login'] // no redirect whitelist
 
 // 白名单数组
@@ -53,6 +55,8 @@ router.beforeEach((to, from, next) => {
 
 // 后置守卫
 router.afterEach((to, from) => {
+  // 等待路由页面跳转完成后，设置最后一个to的元信息 meta里面的title值
+  document.title = getPageTitle(to.meta.title)
   // 隐藏进度条效果
   NProgress.done()
 })

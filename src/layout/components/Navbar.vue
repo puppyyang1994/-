@@ -5,7 +5,7 @@
     <!-- 删除面包屑 换成div -->
     <div class="app-breadcrumb">
       海南天鹏游乐有限公司
-      <span class="breadBtn">体验版</span>
+      <!-- <span class="breadBtn">体验版</span> -->
     </div>
 
     <div class="right-menu">
@@ -65,9 +65,31 @@ export default {
     toggleSideBar () {
       this.$store.dispatch('app/toggleSideBar')
     },
+    // 退出登录 点击事件
     async logout () {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // 为了提高用户体验，给用户一个确认框
+      this.$confirm('确定退出登录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 调用user模块下的logouActions 清除用户信息
+        await this.$store.dispatch('user/logoutActions')
+        // route是信息对象 router后跟方法
+        // this.$route.fullPath  带参数 '/info?a=1-&b=20'
+        // this.$route.path 路径  不带额外的参数  '/info'
+        console.log(this.$route)
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        this.$message({
+          type: 'success',
+          message: '退出登录成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
     }
   }
 }

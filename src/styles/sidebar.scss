@@ -5,6 +5,8 @@
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
+    // 主体区域的背景色调整
+    background-color: #f0f2f5;
   }
 
   .sidebar-container {
@@ -69,6 +71,7 @@
       border: none;
       height: 100%;
       width: 100% !important;
+      
       a {
         li {
           .svg-icon {
@@ -93,6 +96,18 @@
               color: #18CAA7;
             }
           }
+        }
+      }
+      // 补充一个css类  功能：激活某项，高亮效果持久留在原地
+      .is-active {
+        background-color: $menuText !important;
+          
+        span{
+          color: $menuActiveText !important;
+        }
+          
+        .svg-icon{
+          color: $menuActiveText !important;
         }
       }
     }

@@ -8,7 +8,7 @@
  * @param {string} cFormat
  * @returns {string | null}
  */
-export function parseTime(time, cFormat) {
+export function parseTime (time, cFormat) {
   if (arguments.length === 0 || !time) {
     return null
   }
@@ -56,7 +56,7 @@ export function parseTime(time, cFormat) {
  * @param {string} option
  * @returns {string}
  */
-export function formatTime(time, option) {
+export function formatTime (time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000
   } else {
@@ -98,7 +98,7 @@ export function formatTime(time, option) {
  * @param {string} url
  * @returns {Object}
  */
-export function param2Obj(url) {
+export function param2Obj (url) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
   if (!search) {
     return {}
@@ -114,4 +114,29 @@ export function param2Obj(url) {
     }
   })
   return obj
+}
+
+/*
+* 把扁平结构的数据转为树形控件
+ */
+
+// pid是父级部门id 如果pid为空 那么他是父级
+// 如果pid不为空， pid（子级）代表的是父级的id
+
+// list 整个数据数组  rootValue 本次要查找的目标id(也就是父级id)
+// 这个函数是为了找到rootValue目标id的下属们
+
+export function transTree (list, rootValue) {
+  const treeData = [] // 用来装下属对象
+  list.forEach(item => {
+    if (item.pid === rootValue) { // 当前对象pid符合，继续递归寻找他的下属
+      const children = transTree(list, item.id) // 返回符合条件的item对象下数组
+      // 还要做判断看是不是有返回值
+      if (children.length) {
+        item.children = children // 如果有符合的 为item对象添加children属性
+      }
+      treeData.push(item) // 把对象保存到数组里，继续遍历
+    }
+  })
+  return treeData // 遍历结束
 }

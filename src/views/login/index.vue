@@ -62,17 +62,17 @@
       >登录</el-button>
 
       <div class="tips">
-        <span style="margin-right: 20px">账号: 13800000002</span>
-        <span> 密码: 123456</span>
+        <!-- <span style="margin-right: 20px">账号: 13800000002</span>
+        <span> 密码: 123456</span> -->
       </div>
     </el-form>
-    <el-button @click="fnTest">测试</el-button>
+
   </div>
 </template>
 
 <script>
 import { validMobile } from '@/utils/validate'
-import { getUserProfileAPI } from '@/api'
+// import { getUserProfileAPI } from '@/api'
 // import { mapActions } from 'vuex'
 
 export default {
@@ -158,7 +158,10 @@ export default {
             // axios方法无论何时都会返回Promise对象（自定义的，非axios）
             // await等待后面成功了 才会继续往下走
             this.$message(res.message)
-            this.$router.replace('/')
+            // 拿到刚才退回登录时，回传的未遂地址的路径字符串？
+            // 答案：this.$route.query  （vue-router会把?后面的字符串转成对象挂载到query属性上
+            // 逻辑或：前面有地址就跳转回未遂的页面，如果前面没有（证明是第一次登陆，就用后面的值跳转去首页）
+            this.$router.replace(this.$route.query.redirect || '/')
             // console.log('跳转了')   //会先跳转 在登录 解决办法就是异步处理
           } catch (error) {
             console.dir(error)
@@ -167,11 +170,11 @@ export default {
           return false // 测试未通过
         }
       })
-    },
-    async fnTest () {
-      const res = await getUserProfileAPI()
-      console.log(res)
     }
+    // async fnTest () {
+    //   const res = await getUserProfileAPI()
+    //   console.log(res)
+    // }
   }
 }
 </script>
