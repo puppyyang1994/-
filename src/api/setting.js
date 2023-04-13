@@ -16,3 +16,35 @@ export function getCompanyInfoAPI (companyId) {
   })
 }
 
+// 新增角色 data {name, description}
+export function addRoleAPI (data) {
+  return request({
+    url: '/sys/role',
+    method: 'POST',
+    data
+  })
+}
+
+// 获取某一角色聊表
+export function getRoleIdAPI (id) {
+  return request({
+    url: `/sys/role/${id}`
+  })
+}
+
+// 编辑功能API
+export function updateRoleAPI (data) {
+  return request({
+    url: `/sys/role/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+// 删除角色API
+export function deleteRoleAPI (id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'delete'
+  })
+}
