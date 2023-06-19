@@ -13,5 +13,5 @@ module.exports = {
    * @description Whether show the logo in sidebar
    */
   // 显示左侧logo图片，需要先开启是否显示 logo，在 `src/setttings.js` 中将 sidebarLogo 属性设置为 true
-  sidebarLogo: true
+  sidebarLogo: false
 }

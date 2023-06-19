@@ -12,7 +12,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- 拿到用户头像avatar -->
-          <img :src="avatar" class="user-avatar">
+          <img v-imageerror="defaultImg" :src="staffPhoto" class="user-avatar">
           <span class="name">{{ name }}</span>
           <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
@@ -54,11 +54,16 @@ export default {
 
     Hamburger
   },
+  data () {
+    return {
+      defaultImg: require('@/assets/common/head.jpg')
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
-      'name'
+      'name',
+      'staffPhoto'
     ])
   },
   methods: {
@@ -67,29 +72,9 @@ export default {
     },
     // 退出登录 点击事件
     async logout () {
-      // 为了提高用户体验，给用户一个确认框
-      this.$confirm('确定退出登录?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 调用user模块下的logouActions 清除用户信息
-        await this.$store.dispatch('user/logoutActions')
-        // route是信息对象 router后跟方法
-        // this.$route.fullPath  带参数 '/info?a=1-&b=20'
-        // this.$route.path 路径  不带额外的参数  '/info'
-        console.log(this.$route)
-        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-        this.$message({
-          type: 'success',
-          message: '退出登录成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消退出'
-        })
-      })
+      await this.$store.dispatch('user/logout') // 调用登出的action
+      // 必须等到删除完token之后 才去跳转到登录页面
+      this.$router.push('/login')
     }
   }
 }

@@ -62,8 +62,8 @@
       >登录</el-button>
 
       <div class="tips">
-        <!-- <span style="margin-right: 20px">账号: 13800000002</span>
-        <span> 密码: 123456</span> -->
+        <span style="margin-right: 20px">账号: 13800000002</span>
+        <span> 密码: 123456</span>
       </div>
     </el-form>
 
@@ -73,7 +73,7 @@
 <script>
 import { validMobile } from '@/utils/validate'
 // import { getUserProfileAPI } from '@/api'
-// import { mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -116,7 +116,7 @@ export default {
     }
   },
   methods: {
-    // ...mapActions('user', ['loginActions']),
+    ...mapActions(['user/login']),
     showPwd () {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -130,12 +130,11 @@ export default {
     handleLogin () {
       this.$refs.loginForm.validate(async (valid) => {
         // 登录校验
-        if (valid) {
-          this.loading = true
-          // await只能提取Promise对象成功的状态的值
-          // await是来取代then()函数的， await可以把成功的值提取出来留在原地
-          // 如何捕获Promise错误的状态呢？ 使用try+catch
-          /*  try {
+
+        // await只能提取Promise对象成功的状态的值
+        // await是来取代then()函数的， await可以把成功的值提取出来留在原地
+        // 如何捕获Promise错误的状态呢？ 使用try+catch
+        /*  try {
             // 放入可能会报错的代码
             const res = await loginAPI(this.loginForm)
             this.$message.success(res.message)
@@ -149,25 +148,30 @@ export default {
             this.$message.error(err.message)
             console.dir(err)
           } */
+        if (valid) {
+          this.loading = true
           try {
+            console.log('登录')
+
             /* const res = this.$store.dispatch('user/loginActions', this.loginForm)
             console.log(res) 会返回一个Promise对象 */
             // 这里必须加await, 不加await,会调用登录接口的时候，这个登录异步任务无结果的时候，代码会往下走就跳转进去了（就算密码错了也能跳转）
-            const res = await this.$store.dispatch('user/loginActions', this.loginForm)
+            await this['user/login'](this.loginForm)
+            this.$router.push('/')
             // 登录后跳转主页
             // axios方法无论何时都会返回Promise对象（自定义的，非axios）
             // await等待后面成功了 才会继续往下走
-            this.$message(res.message)
+            // this.$message(res.message)
             // 拿到刚才退回登录时，回传的未遂地址的路径字符串？
             // 答案：this.$route.query  （vue-router会把?后面的字符串转成对象挂载到query属性上
             // 逻辑或：前面有地址就跳转回未遂的页面，如果前面没有（证明是第一次登陆，就用后面的值跳转去首页）
-            this.$router.replace(this.$route.query.redirect || '/')
+            // this.$router.replace(this.$route.query.redirect || '/')
             // console.log('跳转了')   //会先跳转 在登录 解决办法就是异步处理
           } catch (error) {
-            console.dir(error)
+            console.log(error)
+          } finally {
+            this.loading = false
           }
-        } else {
-          return false // 测试未通过
         }
       })
     }
